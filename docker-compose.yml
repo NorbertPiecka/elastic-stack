@@ -37,6 +37,7 @@ services:
 
 
   apm-server:
+    container_name: apm-server
     image: docker.elastic.co/apm/apm-server:8.12.1
     depends_on:
       elasticsearch:

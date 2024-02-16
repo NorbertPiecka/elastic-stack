@@ -7,7 +7,7 @@ services:
     ports:
       - 9200:9200
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+      - data:/usr/share/elasticsearch/data
     environment:
       - "ES_JAVA_OPTS=-Xms8192m -Xmx8192m"
       - discovery.type=single-node
@@ -16,7 +16,7 @@ services:
     healthcheck:
       interval: 20s
       retries: 10
-      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+      test: curl -s http://elasticsearch:9200/_cluster/health | grep -vq '"status":"red"'
 
   kibana:
     container_name: kibana
@@ -27,14 +27,12 @@ services:
       - elasticsearch
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - xpack.apm.enabled=false
     networks:
       - elastic
     healthcheck:
       interval: 10s
       retries: 20
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
-
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://kibana:5601/api/status
 
   apm-server:
     container_name: apm-server
@@ -61,12 +59,12 @@ services:
     healthcheck:
       interval: 10s
       retries: 12
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://apm-server:8200/
 
 networks:
   elastic:
-    external: true
+    driver: bridge
 
 volumes:
-  elasticsearch-data:
+  data:
     external: true

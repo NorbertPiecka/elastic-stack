@@ -13,10 +13,6 @@ services:
       - 9200:9200
     networks:
       - elastic
-    healthcheck:
-      interval: 20s
-      retries: 10
-      test: curl -s http://elasticsearch:9200/_cluster/health | grep -vq '"status":"red"'
 
   kibana:
     container_name: kibana
@@ -36,7 +32,7 @@ services:
 
   apm-server:
     container_name: apm-server
-    image: docker.elastic.co/apm/apm-server:8.12.1
+    build: ./apm-server
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -55,11 +51,10 @@ services:
          -E setup.template.settings.index.number_of_replicas=0
          -E apm-server.kibana.enabled=true
          -E apm-server.kibana.host=kibana:5601
-         -E output.elasticsearch.hosts=["elasticsearch:9200"]
     healthcheck:
       interval: 10s
       retries: 12
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://apm-server:8200/
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
 
 networks:
   elastic:

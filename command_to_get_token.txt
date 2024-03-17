@@ -1,0 +1,2 @@
+curl -X POST -u elastic:norbertpw "localhost:9200/_security/service/elastic/kibana/credential/token/token1?pretty"
+curl -X POST -u elastic:norbertpw "130.61.118.194:9200/_security/service/elastic/kibana/credential/token/token1?pretty"

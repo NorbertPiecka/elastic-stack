@@ -7,6 +7,9 @@ services:
     environment:
       - "ES_JAVA_OPTS=-Xms8192m -Xmx8192m"
       - discovery.type=single-node
+      - xpack.security.enabled=true
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
     volumes:
       - data:/usr/share/elasticsearch/data
     ports:
@@ -16,11 +19,13 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.12.1
+    build: ./kibana
     depends_on:
       - elasticsearch
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=$KIBANA_TOKEN
+    volumes:
+      - data:/usr/share/kibana/data
     ports:
       - 5601:5601
     networks:

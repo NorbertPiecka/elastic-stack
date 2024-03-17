@@ -5,6 +5,6 @@ output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   ssl.verification_mode: "none"
   index: "apm-%{[{beat.version}]}"
-  protocol: "https"
+  protocol: "http"
   username: "apm"
   password: "apmpass"
